@@ -39,7 +39,7 @@
             let text = document.getElementById("input").value;
             let secret = document.getElementById("secret").value;
             let words = text.split(" ");
-            let wordsB64 = words.map(word => btoa(word + " "));
+            let wordsB64 = words.map(word => btoa(unescape(encodeURIComponent(word + " "))));
             let secretBits = secret.length.toString(2).padStart(16, '0');
             secretBits += secret.split('').map(c => c.charCodeAt(0).toString(2).padStart(7, '0')).join('');
             let maxSecretLength = wordsB64.reduce((sum, word) => sum + (word.match(/=/g) || []).length * 2, 0);
