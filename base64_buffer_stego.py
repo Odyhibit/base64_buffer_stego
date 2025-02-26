@@ -1,9 +1,6 @@
 from base64 import b64encode
-from typing import TextIO
 
 base64_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-dict = [x for x in base64_alphabet]
-padding_bits = ""
 
 
 def get_message(padding_bits: str) -> str:
@@ -19,11 +16,6 @@ def get_message(padding_bits: str) -> str:
 
 
 def base64_padding_decoder(base64_strings: str) -> str:
-    """
-    This function will take a list of base64 strings and return the padding bits
-    :param base64_strings: This is a newline separated list of base64 strings
-    :return: A string decoded from the padding bits
-    """
     output = ""
     for line in base64_strings.split("\n"):
         binary_line = ""
@@ -45,7 +37,8 @@ def encode_word(word, secret):
     equal_sign_index = word.index('=')
     char_to_modify = word[equal_sign_index - 1]
     shift_amount = int(secret, 2)
-    encoded_char = dict[dict.index(char_to_modify) + shift_amount]
+    encoded_char = base64_alphabet[(base64_alphabet.index(char_to_modify) + shift_amount) % len(base64_alphabet)]
+
     encoded_word = word[:equal_sign_index - 1] + encoded_char + '=' * (len(word) - equal_sign_index)
     return encoded_word
 
@@ -87,10 +80,8 @@ def save_file(filename, contents):
 
 def main():
     # example
-    file = open_file("b64_or_b64_challenge.txt")
-    print(base64_padding_decoder(file))
     output_list = encode("Lots of text that is needed for the base64 encoding. There will need to be long pieces for "
-                         "this to work right.", "hi")
+                         "this to work right.", "hello")
     for base64_word in output_list:
         print(base64_word)
 
