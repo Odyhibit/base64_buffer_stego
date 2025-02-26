@@ -6,7 +6,7 @@ dict = [x for x in base64_alphabet]
 padding_bits = ""
 
 
-def get_message(padding_bits: str | TextIO) -> str:
+def get_message(padding_bits: str) -> str:
     """
     This function will take a string of padding bits and return the message.
     The first 16 bits of the padding bits will be the size of the message.
@@ -42,69 +42,35 @@ def base64_padding_decoder(base64_strings: str) -> str:
 
 
 def encode_word(word, secret):
-    """Encode 2 or 4 bits of secret inside base64 encoded word
-
-    Arguments:
-    word (str)           -- Base64 encoded word serving as carrier
-    secret (str)         -- 2-bit or 4-bit secret to hide
-
-    Output:
-    encoded_string (str) -- Re-encoded base64 string with secret
-    """
-    first_equal = word.index('=')
-    to_modify = word[first_equal - 1]
-    delta = int(secret, 2)
-    encoded_char = dict[dict.index(to_modify) + delta]
-    encoded_string = word[:first_equal - 1] + encoded_char + (len(word) - first_equal) * '='
-    return encoded_string
-
-
-def count_equals(word_list):
-    """Returns the number of bits that can be hidden inside a text
-
-    Arguments:
-    word_list (str[]) -- List of Base64 strings
-
-    Output:
-    count (int)       -- Number of '=' in the list times 2
-    """
-    equals = 0
-    for word in word_list:
-        equals += word.count('=')
-    count = 2 * equals
-    return count
+    equal_sign_index = word.index('=')
+    char_to_modify = word[equal_sign_index - 1]
+    shift_amount = int(secret, 2)
+    encoded_char = dict[dict.index(char_to_modify) + shift_amount]
+    encoded_word = word[:equal_sign_index - 1] + encoded_char + '=' * (len(word) - equal_sign_index)
+    return encoded_word
 
 
 def encode(text, secret):
-    """Encodes a secret in a base64 word list, from a text string
-
-    Arguments:
-    text (str)           -- ascii text serving as a carrier
-    secret (str)         -- secret ascii text to encode of max length 2^16 words
-    verbose (bool)       -- verbosity toggle
-
-    Output:
-    encoded_list (str[]) -- base64 list of words with the secret encoded within
-    """
     words = text.split(' ')
-    words_b64 = [b64encode((word + " ").encode('ascii')).decode('ascii') for word in words]
-    secret_max_length = count_equals(words_b64)
-
-    if 7 * len(secret) + 16 > secret_max_length:
-        raise ValueError('[ERROR] The text size is too small for the secret. Please add more text.')
+    base64_words = [b64encode((word + " ").encode('ascii')).decode('ascii') for word in words]
+    max_secret_length = 2 * sum(word.count('=') for word in base64_words)
+    if 7 * len(secret) + 16 > max_secret_length:
+        raise ValueError('*!* Need more text to encode this secret.')
 
     bin_secret = bin(len(secret))[2:].zfill(16)
     for char in secret:
         bin_secret += bin(ord(char))[2:].zfill(7)
-    bin_secret = bin_secret + (secret_max_length - len(bin_secret)) * '0'
+    bin_secret += (max_secret_length - len(bin_secret)) * '0'
+
     encoded_list = []
-    for word in words_b64:
-        equals = word.count('=')
-        if equals > 0:
-            encoded_list.append(encode_word(word, bin_secret[:2 * equals]))
-            bin_secret = bin_secret[2 * equals:]
+    for word in base64_words:
+        equals_count = word.count('=')
+        if equals_count > 0:
+            encoded_list.append(encode_word(word, bin_secret[:2 * equals_count]))
+            bin_secret = bin_secret[2 * equals_count:]  # Move to the next section of the secret
         else:
-            encoded_list.append(word)
+            encoded_list.append(word)  # If no '=' in the word, leave it as is
+
     return encoded_list
 
 
