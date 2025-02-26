@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background: linear-gradient(to right, #1e3c72, #2a5298);
+    color: white;
+    text-align: center;
+}
+textarea, input, #output {
+    width: 80%;
+    padding: 10px;
+    margin: 10px auto;
+    display: block;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transition: all 0.3s ease;
+}
+textarea{
+height: 150px;
+}
+textarea:hover, input:hover, textarea:focus, input:focus {
+    background: rgba(255, 255, 255, 0.4);
+}
+input::placeholder, textarea::placeholder {
+opacity: 0.5;
+color: white;
+}
+button {
+    padding: 12px 24px;
+    margin: 10px;
+    border: none;
+    border-radius: 25px;
+    font-size: 18px;
+    cursor: pointer;
+    background: #ff7eb3;
+    color: white;
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+button:hover {
+    transform: scale(1.1);
+    background: #ff3e85;
+}
+#output, #encodedOutput {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    display: inline-block;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+h2 {
+    animation: fadeIn 1.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
