@@ -7,18 +7,20 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="container">
+    <h1>Steganography Encoder/Decoder</h1>
     <h2>Steganography Base64 Encoder/Decoder</h2>
     <p>You can paste the newline separated base64 text here to decode, or you can paste a bunch of text here to encode a secret message.</p>
     <textarea id="input" placeholder="Paste text here..."></textarea>
     <input id="secret" type="text" placeholder="Enter secret message...">
-    <br>
+
     <button onclick="encodeMessage()">Encode</button>
     <button onclick="decodeMessage()">Decode</button>
     <br>
     <textarea id="encodedOutput" placeholder="Encoded Base64 output..." readonly></textarea>
     <br>
     <div id="output" >Secret message</div>
-
+</div>
     <script src="stego.js"></script>
 </body>
 </html>
